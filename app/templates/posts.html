@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
 
 {% block title %}
   Posts - {{ super() }}
@@ -24,18 +25,26 @@
       </div> <!-- Ends col-md-3 -->
 
       <div class="col-md-8 offset-md-1">
-        {% for k, v in posts.items() %}
-          {% if v.name == name %}
-            <div class="row card">
-              <img class="prof_pic" src="http://placehold.it/25x25" alt="Person">
-              <div class="col-md-10 offset-md-2">
-                  <p>{{ v.date }}</p>
-                  <h3>{{ v.tweet }}</h3>
-              </div>
-            </div> <!-- End row for cards -->
-          {% endif %}
-        {% endfor %}
-      </div>
-    </div>
-  </div>
+        <!-- Start of post form -->
+        <div class="row card">
+          <div class="col-md-12">
+            {{ wtf.quick_form(form) }}
+          </div> <!-- End col for post form -->
+        </div> <!-- End post form row -->
+
+        <!-- Start loop for posts listed -->
+          {% for post in posts %}
+            {% if post.name == name %}
+              <div class="row card">
+                <img class="prof_pic" src="http://placehold.it/25x25" alt="Person">
+                <div class="col-md-10 offset-md-2">
+                    <p>{{ post.timestamp }}</p>
+                    <h3>{{ post.body }}</h3>
+                </div>
+              </div> <!-- End row for cards -->
+            {% endif %}
+          {% endfor %}
+      </div> <!-- Ends col-8 for posts on right side -->
+    </div> <!-- Ends row for full page -->
+  </div> <!-- Ends container -->
 {% endblock %}
