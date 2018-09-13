@@ -26,11 +26,13 @@
 
       <div class="col-md-8 offset-md-1">
         <!-- Start post form -->
-        <div class="row card">
-          <div class="col-md-12">
-            {{ wtf.quick_form(form) }}
-          </div> <!-- Ends col for form -->
-        </div> <!-- ends row for form -->
+        {% if current_user.is_authenticated and current_user.name == name %}
+          <div class="row card">
+            <div class="col-md-12">
+              {{ wtf.quick_form(form) }}
+            </div> <!-- Ends col for form -->
+          </div> <!-- ends row for form -->
+        {% endif %}
 
         {% for post in posts %}
           {% if post.name == name %}
