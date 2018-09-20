@@ -5,14 +5,19 @@ from flask_login import UserMixin
 
 
 class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
+    user_id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(30))
+    last_name = db.Column(db.String(50))
     age = db.Column(db.Integer)
-    bio = db.Column(db.String(140))
-    url = db.Column(db.String(100))
-    username = db.Column(db.String(50), unique=True, index=True)
-    email = db.Column(db.String(100), unique=True, index=True)
+    bio = db.Column(db.String(150))
+    url = db.Column(db.String(150))
+    username = db.Column(db.String(30), unique=True, index=True)
+    email = db.Column(db.String(120), unique=True)
     password_hash = db.Column(db.String(256))
+    posts = db.relationship('Post', backref=db.backref("user", lazy="joined"))
+
+    def get_id(self):
+        return self.user_id
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -25,10 +30,11 @@ class User(UserMixin, db.Model):
 
 
 class Post(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    post_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.user_id'))
     tweet = db.Column(db.String(140))
-    timestamp = db.Column(db.DateTime, default=datetime.now().date())
-    name = db.Column(db.String(50))
+    date_posted = db.Column(db.DateTime, default=datetime.now().date())
+    likes = db.Column(db.Integer, default=0)
 
     def __repr__(self):
         return 'Post {}: {}'.format(self.id, self.tweet)
