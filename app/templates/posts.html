@@ -11,22 +11,18 @@
       <div class="col-md-3">
         <div class="row">
           <div class="col-md-12 card">
-            {% for person in people %}
-              {% if person.name == name %}
-                <img class="center card-img-top" src="{{ person.url }}" alt="Placeholder Image">
-                <div class="card-title"><b>{{ person.name }}</b></div>
-                <div class="card-subtitle"><b>Age:</b> {{ person.age }}</div>
-                <div class="card-text"><b>Bio:</b> {{ person.bio }}</div>
-                <button class="btn btn-primary center">Follow</button>
-              {% endif %}
-            {% endfor %}
+            <img class="center card-img-top" src="{{ person.url }}" alt="Placeholder Image">
+            <div class="card-title"><b>{{ person.first_name }} {{ person.last_name }}</b></div>
+            <div class="card-subtitle"><b>Age:</b> {{ person.age }}</div>
+            <div class="card-text"><b>Bio:</b> {{ person.bio }}</div>
+            <button class="btn btn-primary center">Follow</button>
           </div> <!-- Ends col-md-12 for card -->
         </div> <!-- Ends row for card on left -->
       </div> <!-- Ends col-md-3 -->
 
       <div class="col-md-8 offset-md-1">
         <!-- Start post form -->
-        {% if current_user.is_authenticated and current_user.name == name %}
+        {% if current_user.is_authenticated and current_user.username == person.username %}
           <div class="row card">
             <div class="col-md-12">
               {{ wtf.quick_form(form) }}
@@ -34,16 +30,14 @@
           </div> <!-- ends row for form -->
         {% endif %}
 
-        {% for post in posts %}
-          {% if post.name == name %}
-            <div class="row card">
-              <img class="prof_pic" src="http://placehold.it/25x25" alt="Person">
-              <div class="col-md-10 offset-md-2">
-                  <p>{{ post.timestamp.date() }}</p>
-                  <h3>{{ post.tweet }}</h3>
-              </div>
-            </div> <!-- End row for cards -->
-          {% endif %}
+        {% for post in person.posts %}
+          <div class="row card">
+            <img class="prof_pic" src="http://placehold.it/25x25" alt="Person">
+            <div class="col-md-10 offset-md-2">
+                <p>{{ post.date_posted.date() }}</p>
+                <h3>{{ post.tweet }}</h3>
+            </div>
+          </div> <!-- End row for cards -->
         {% endfor %}
       </div> <!-- Ends column on right side for posts -->
     </div> <!-- Ends row for entire page -->

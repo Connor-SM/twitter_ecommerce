@@ -105,9 +105,9 @@ def index(title=''):
 #     }
 # }
 
-@app.route('/posts/<name>', methods=['GET', 'POST'])
+@app.route('/posts/<username>', methods=['GET', 'POST'])
 @login_required
-def posts(name):
+def posts(username):
     form = PostForm()
 
     # people = {
@@ -125,17 +125,16 @@ def posts(name):
     #     }
     # }
 
-    people = User.query.all()
-    posts = Post.query.all()
+    person = User.query.filter_by(username=username).first()
 
     if form.validate_on_submit():
         tweet = form.post.data
         date = datetime.datetime.now().date()
-        post = Post(tweet=tweet, timestamp=date, name=name)
+        post = Post(tweet=tweet, date_posted=date, user_id=current_user.user_id)
         db.session.add(post)
         db.session.commit()
         flash('You have successfully posted your tweet!')
-        return redirect(url_for('posts', name=name))
+        return redirect(url_for('posts', username=current_user.username))
         # length = len(posts_dict)
         # posts_dict[length] = {
         #     'date': date,
@@ -143,7 +142,7 @@ def posts(name):
         #     'tweet': tweet
         # }
 
-    return render_template('posts.html', people=people, name=name, posts=posts, page='posts', form=form)
+    return render_template('posts.html', person=person, username=username, posts=posts, page='posts', form=form)
 
 
 @app.route('/title', methods=['GET', 'POST'])
@@ -172,7 +171,7 @@ def login():
             return redirect(url_for('login'))
         login_user(user, remember=form.remember_me.data)
         flash('You are now logged in.')
-        return redirect(url_for('posts', name=user.name))
+        return redirect(url_for('posts', username=user.username))
 
     return render_template('login.html', form=form, page='login')
 
@@ -185,7 +184,7 @@ def register():
     form = RegisterForm()
 
     if form.validate_on_submit():
-        user = User(name=form.name.data, username=form.username.data, email=form.email.data, bio=form.bio.data, age=form.age.data, url=form.url.data)
+        user = User(first_name=form.first_name.data, last_name=form.last_name.data, username=form.username.data, email=form.email.data, bio=form.bio.data, age=form.age.data, url=form.url.data)
         user.set_password(form.password.data)
         db.session.add(user)
         db.session.commit()
